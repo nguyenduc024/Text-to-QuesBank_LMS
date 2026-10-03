@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngân hàng câu hỏi</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header-section">
+      <h1 class="title">Tạo ngân hàng câu hỏi từ LMS HUB</h1>
+      <p class="subtitle">Làm sạch câu hỏi thô từ bài kiểm tra và đồng bộ vào Google Sheet.</p>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">Cấu hình</h2>
+      <div class="field-row">
+        <div class="field-col">
+          <label for="apiKey">Gemini API Key</label>
+          <input type="password" id="apiKey" value="" autocomplete="off" placeholder="Nhập API Key của bạn...">
+        </div>
+        <div class="field-col">
+          <label for="modelName">Tên mô hình</label>
+          <input type="text" id="modelName" value="gemini-3.5-flash-lite" autocomplete="off">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-col">
+          <label for="webhookUrl">Google Apps Script Webhook URL</label>
+          <input type="text" id="webhookUrl" value="" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+        <div class="field-col">
+          <label for="subjectName">Tên môn học hoặc đề thi</label>
+          <input type="text" id="subjectName">
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Nội dung</h2>
+      <div class="field-group">
+        <label for="rawText">Văn bản thô từ bài làm</label>
+        <textarea id="rawText" rows="8"></textarea>
+      </div>
+      <div class="button-group">
+        <button id="btnProcess" class="btn-primary" type="button">Xử lý câu hỏi</button>
+        <button id="btnClear" class="btn-link" type="button">Xoá nội dung</button>
+      </div>
+      <div id="statusMessage" class="status-box hidden"></div>
+    </section>
+
+    <section id="resultSection" class="section hidden">
+      <h2 class="section-title">Kết quả trích xuất</h2>
+      <div class="table-wrapper">
+        <table id="questionsTable">
+          <thead>
+            <tr>
+              <th class="num">STT</th>
+              <th>Câu hỏi</th>
+              <th>Phương án A</th>
+              <th>Phương án B</th>
+              <th>Phương án C</th>
+              <th>Phương án D</th>
+              <th>Đáp án</th>
+              <th>Ghi chú</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="questionsTbody"></tbody>
+        </table>
+      </div>
+      <div class="button-group">
+        <button id="btnSyncSheet" class="btn-secondary" type="button">Gửi vào Google Sheet</button>
+        <button id="btnCopyTsv" class="btn-link" type="button">Sao chép dạng bảng</button>
+      </div>
+      <div id="syncStatusMessage" class="status-box hidden"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
