@@ -14,17 +14,21 @@ Công cụ dựa trên nền tảng web giúp tự động trích xuất, làm s
 ## Cách sử dụng
 
 1.  **Chạy ứng dụng:** Mở file `index.html` bằng bất kỳ trình duyệt web hiện đại nào. (Không cần cài đặt thêm phần mềm/thư viện nào).
-2.  **Cấu hình:**
+2.  **Cài đặt Webhub Question Bank**: Hướng dẫn ở phần dưới
+3.  **Cấu hình:**
     *   **Gemini API Key:** Nhập khóa API Gemini của bạn.
     *   **Tên mô hình:** Mặc định là `gemini-3.5-flash-lite`, bạn có thể đổi sang các mô hình khác (ví dụ: `gemini-pro`).
     *   **Google Apps Script Webhook URL:** (Tùy chọn) Nhập URL Webhook nếu bạn muốn sử dụng tính năng đồng bộ trực tiếp lên Google Sheets.
     *   **Tên môn học:** Điền tên môn học để gán nhãn cho các câu hỏi khi xuất dữ liệu.
-3.  **Xử lý dữ liệu:**
+4.  **Xử lý dữ liệu:**
     *   Dán nội dung bài thi/câu hỏi thô copy từ LMS HUB vào ô "Văn bản thô từ bài làm".
     *   Nhấn nút **Xử lý câu hỏi** và chờ hệ thống phân tích.
-4.  **Kiểm tra và Xuất:**
+5.  **Kiểm tra và Xuất:**
     *   Kiểm tra lại dữ liệu trong bảng kết quả. Bạn có thể bấm vào biểu tượng ✏️ để sửa hoặc biểu tượng 🗑️ để xóa câu hỏi.
     *   Dùng nút **Sao chép dạng bảng** hoặc **Gửi vào Google Sheet** để lưu lại thành quả.
+6. **Sau khi có Question Bank:**
+    *   Paste code từ file `CheckDupQues.js` và deploy tương tự bước đầu triển khai Webhook.
+    *   Sau khi nhấn deploy, quay lại trang GG Sheet chứa Question Bank và tải lại trang, sau đó sẽ xuất hiện 1 tab mới trên thanh công cụ: Kiểm tra trùng lặp. Code sẽ tự chạy kiểm tra và hiển thị kết quả ở cột J.
 
 ## Hướng dẫn cài đặt Google Apps Script (Để đồng bộ Sheets)
 
