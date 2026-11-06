@@ -272,6 +272,10 @@ btnSyncSheet.addEventListener('click', async () => {
     }
 
     let msg = `Đã ghi thành công ${result.insertedCount} câu vào Google Sheet.`;
+    if (result.sheetName) {
+      msg = `Đã ghi thành công ${result.insertedCount} câu vào trang "${result.sheetName}"` +
+        (result.sheetCreated ? ' (trang mới được tạo).' : '.');
+    }
     if (result.messages && result.messages.length > 0) {
       msg += '\n\nCảnh báo:\n' + result.messages.join('\n');
     }

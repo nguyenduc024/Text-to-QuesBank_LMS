@@ -1,7 +1,16 @@
-function doPost(e) {
+/**
+ * Nhận câu hỏi từ web HUB và ghi vào Google Sheet.
+ *
+ * File này nằm CHUNG dự án Apps Script với Code.gs của web LMS (cùng 1 file Sheet).
+ * Một dự án chỉ có được 1 hàm doPost, nên doPost nằm ở Code.gs và tự chuyển
+ * dữ liệu của HUB (có "questions", không có "action") sang hàm này.
+ */
+function importQuestions(e) {
   try {
     var data = JSON.parse(e.postData.contents);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    // Chọn trang tính theo tên môn: mỗi môn 1 tab trong cùng file Sheet
+    var target = getTargetSheet(data.subject);
+    var sheet = target.sheet;
     
     // Nếu sheet rỗng, thêm tiêu đề cột
     if (sheet.getLastRow() === 0) {
@@ -108,14 +117,51 @@ function doPost(e) {
       sheet.getRange(realLastRow + 1, 1, rowsToInsert.length, 9).setValues(rowsToInsert);
     }
     
-    return ContentService.createTextOutput(JSON.stringify({ 
-      status: "success", 
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
       insertedCount: rowsToInsert.length,
-      messages: messages
+      messages: messages,
+      sheetName: sheet.getName(),
+      sheetCreated: target.created
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// Các trang lịch sử làm bài của web LMS, không được ghi câu hỏi vào đây
+var RESERVED_SHEETS = ["log_exam", "log_practice"];
+
+/**
+ * Tìm trang tính (tab) có tên trùng với tên môn, không phân biệt hoa thường.
+ * Chưa có thì tạo tab mới với tên đó (dòng tiêu đề sẽ được thêm ở doPost như cũ).
+ * Không nhập tên môn thì dùng trang đang mở như trước đây.
+ */
+function getTargetSheet(subject) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var name = toSheetName(subject);
+  if (!name) return { sheet: ss.getActiveSheet(), created: false };
+
+  if (RESERVED_SHEETS.indexOf(name.toLowerCase()) !== -1) {
+    throw new Error('Không thể dùng tên "' + name + '" vì đây là trang lưu lịch sử làm bài.');
+  }
+
+  var sheets = ss.getSheets();
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].getName().trim().toLowerCase() === name.toLowerCase()) {
+      return { sheet: sheets[i], created: false };
+    }
+  }
+  return { sheet: ss.insertSheet(name), created: true };
+}
+
+// Tên tab của Google Sheet không được chứa : \ / ? * [ ] và tối đa 100 ký tự
+function toSheetName(subject) {
+  return String(subject || "")
+    .replace(/[:\\\/?*\[\]]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 100);
 }
